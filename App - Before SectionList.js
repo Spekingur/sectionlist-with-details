@@ -30,17 +30,6 @@ export default class App extends React.Component {
     this.setState({ gotData: true, concerts: data });
   }
 
-  getNamesBeginningWith(a) {
-    let i = 0;
-    let grad = [];
-    while (this.state.concerts[i].name.first_name.startsWith(a)) {
-      grad.push(this.state.concerts[i]);
-      i += 1;
-    }
-    console.log(grad);
-    return grad;
-  }
-
   renderConcerts = concerts => {
     return concerts.map((concert, index) => {
       return (
@@ -57,23 +46,7 @@ export default class App extends React.Component {
         {!this.state.gotData ? (
           <ActivityIndicator size="large" />
         ) : (
-          <SectionList
-            renderItem={({ item, index, section }) => (
-              <Text key={index}>{item}</Text>
-            )}
-            renderSectionHeader={({ section: { title } }) => (
-              <Text style={{ fontWeight: "bold" }}>{title}</Text>
-            )}
-            sections={[
-              {
-                title: "A",
-                data: [this.getNamesBeginningWith("A")]
-              },
-              { title: "B", data: [this.getNamesBeginningWith("B")] },
-              { title: "C", data: ["item5", "item6"] }
-            ]}
-            keyExtractor={(item, index) => item + index}
-          />
+          this.renderConcerts(this.state.concerts)
         )}
       </ScrollView>
     );
