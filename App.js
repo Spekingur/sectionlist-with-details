@@ -1,7 +1,15 @@
 import React from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 const data = require("./ass2data.json");
+
+//Sort alphabetically
+data.sort(function(a, b) {
+  if (a.name.first_name < b.name.first_name) return -1;
+  if (a.name.first_name > b.name.first_name) return 1;
+  return 0;
+});
 
 export default class App extends React.Component {
   constructor(props) {
@@ -28,22 +36,34 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container}>
         {!this.state.gotData ? (
           <ActivityIndicator size="large" />
         ) : (
           this.renderConcerts(this.state.concerts)
         )}
-      </View>
+      </ScrollView>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center"
+    padding: 16
+  },
+  concertContainer: {
+    flex: 1,
+    flexDirection: "row",
+    paddingBottom: 16
+  },
+  infoContainer: {
+    paddingLeft: 8,
+    justifyContent: "space-around",
+    flex: 1
+  },
+  text: {
+    fontSize: 14,
+    fontFamily: "space-mono"
   }
 });
