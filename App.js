@@ -33,12 +33,16 @@ export default class App extends React.Component {
   getNamesBeginningWith(a) {
     let i = 0;
     let grad = [];
+    while (this.state.concerts[i].name.first_name[0] != a && a <= "z") {
+      i++;
+    }
     while (this.state.concerts[i].name.first_name.startsWith(a)) {
-      grad.push(this.state.concerts[i]);
+      grad.push(this.state.concerts[i].name.first_name);
       i += 1;
     }
     console.log(grad);
-    return grad;
+    //return grad;
+    return grad.join("\r\n");
   }
 
   renderConcerts = concerts => {
@@ -65,12 +69,16 @@ export default class App extends React.Component {
               <Text style={{ fontWeight: "bold" }}>{title}</Text>
             )}
             sections={[
-              {
-                title: "A",
-                data: [this.getNamesBeginningWith("A")]
-              },
+              { title: "A", data: [this.getNamesBeginningWith("A")] },
               { title: "B", data: [this.getNamesBeginningWith("B")] },
-              { title: "C", data: ["item5", "item6"] }
+              { title: "C", data: [this.getNamesBeginningWith("C")] },
+              { title: "D", data: [this.getNamesBeginningWith("D")] },
+              { title: "E", data: [this.getNamesBeginningWith("E")] },
+              { title: "F", data: [this.getNamesBeginningWith("F")] },
+              { title: "G", data: [this.getNamesBeginningWith("G")] },
+              { title: "H", data: [this.getNamesBeginningWith("H")] },
+              { title: "I", data: [this.getNamesBeginningWith("I")] },
+              { title: "J", data: [this.getNamesBeginningWith("J")] }
             ]}
             keyExtractor={(item, index) => item + index}
           />
