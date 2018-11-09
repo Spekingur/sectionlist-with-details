@@ -4,7 +4,12 @@
 
 import React from 'react';
 import {
-  ActivityIndicator, SectionList, StyleSheet, Text, View,
+  ActivityIndicator,
+  SectionList,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
 } from 'react-native';
 import { Constants } from 'expo';
 
@@ -92,9 +97,9 @@ export default class App extends React.Component {
             <ActivityIndicator size="small" style={{ justifyContent: 'center' }} />
           )}
           renderItem={({ item, index }) => (
-            <Text style={styles.item} key={index} onPress={() => this.onPress(item)}>
+            <TouchableOpacity style={styles.item} key={index} onPress={() => this.onPress(item)}>
               {item.name.first_name}
-            </Text>
+            </TouchableOpacity>
           )}
           renderSectionHeader={({ section: { title } }) => (
             <Text style={styles.header}>{title}</Text>
