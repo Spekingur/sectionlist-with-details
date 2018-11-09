@@ -78,21 +78,21 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       gotData: false,
-      concerts: [],
     };
   }
 
   componentDidMount() {
-    this.setState({ gotData: true, concerts: data });
+    this.setState({ gotData: true });
   }
 
   render() {
+    const { gotData } = this.state;
     return (
       <View style={styles.container}>
         <View>
           <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Contacts</Text>
         </View>
-        {!this.state.gotData ? (
+        {!gotData ? (
           <ActivityIndicator size="large" />
         ) : (
           <SectionList
@@ -100,11 +100,11 @@ export default class App extends React.Component {
             ListFooterComponent={() => <ActivityIndicator size="small" />}
             renderItem={({ item, index }) => (
               <Text style={styles.item} key={index}>
-                {item}
+                {item.name.first_name}
               </Text>
             )}
             renderSectionHeader={({ section: { title } }) => (
-              <Text style={styles.header}>{title.name.first_name}</Text>
+              <Text style={styles.header}>{title}</Text>
             )}
             sections={sectArr}
             keyExtractor={(item, index) => item + index}
