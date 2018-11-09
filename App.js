@@ -7,10 +7,10 @@ import {
   ActivityIndicator, SectionList, StyleSheet, Text, View,
 } from 'react-native';
 import { Constants } from 'expo';
-// import { ScrollView } from 'react-native-gesture-handler';
 
-// const data = require('./ass2data.json');
-import data from './ass2data';
+import DetailView from './src/detailview/DetailView';
+
+import data from './ass2data'; // the data we are working with
 
 const styles = StyleSheet.create({
   container: {
@@ -70,46 +70,38 @@ const sectArr = Object.keys(sortedDict).map(letterkey => ({
   data: sortedDict[letterkey],
 }));
 
-console.log(sortedDict);
-console.log(sectArr);
-
 export default class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      gotData: false,
-    };
-  }
-
-  componentDidMount() {
-    this.setState({ gotData: true });
-  }
+  onPress = (item) => {
+    console.log(item);
+  };
 
   render() {
-    const { gotData } = this.state;
     return (
       <View style={styles.container}>
         <View>
-          <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Contacts</Text>
+          <Text style={{ fontSize: 16, fontWeight: 'bold', justifyContent: 'center' }}>
+            Contacts
+          </Text>
         </View>
-        {!gotData ? (
-          <ActivityIndicator size="large" />
-        ) : (
-          <SectionList
-            style={styles.list}
-            ListFooterComponent={() => <ActivityIndicator size="small" />}
-            renderItem={({ item, index }) => (
-              <Text style={styles.item} key={index}>
-                {item.name.first_name}
-              </Text>
-            )}
-            renderSectionHeader={({ section: { title } }) => (
-              <Text style={styles.header}>{title}</Text>
-            )}
-            sections={sectArr}
-            keyExtractor={(item, index) => item + index}
-          />
-        )}
+        <SectionList
+          style={styles.list}
+          ListEmptyComponent={
+            <ActivityIndicator size="large" style={{ justifyContent: 'center' }} />
+          }
+          ListFooterComponent={() => (
+            <ActivityIndicator size="small" style={{ justifyContent: 'center' }} />
+          )}
+          renderItem={({ item, index }) => (
+            <Text style={styles.item} key={index} onPress={() => this.onPress(item)}>
+              {item.name.first_name}
+            </Text>
+          )}
+          renderSectionHeader={({ section: { title } }) => (
+            <Text style={styles.header}>{title}</Text>
+          )}
+          sections={sectArr}
+          keyExtractor={(item, index) => item + index}
+        />
       </View>
     );
   }
