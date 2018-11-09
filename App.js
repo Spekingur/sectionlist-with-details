@@ -1,110 +1,116 @@
-import React from "react";
+// (c) 2018
+// Hreidar Olafur Arnarsson, hreidara14@ru.is
+// Maciej Sierzputowski, maciej15@ru.is
+
+import React from 'react';
 import {
-  ActivityIndicator,
-  SectionList,
-  StyleSheet,
-  Text,
-  View
-} from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+  ActivityIndicator, SectionList, StyleSheet, Text, View,
+} from 'react-native';
+import { Constants } from 'expo';
+// import { ScrollView } from 'react-native-gesture-handler';
 
-const data = require("./ass2data.json");
+// const data = require('./ass2data.json');
+import data from './ass2data';
 
-//Function for alphabetical sorting
-data.sort(function(a, b) {
-  if (a.name.first_name < b.name.first_name) return -1;
-  if (a.name.first_name > b.name.first_name) return 1;
-  return 0;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    paddingTop: Constants.statusBarHeight,
+    backgroundColor: '#fff',
+    padding: 16,
+  },
+  concertContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    paddingBottom: 16,
+  },
+  infoContainer: {
+    paddingLeft: 8,
+    justifyContent: 'space-around',
+    flex: 1,
+  },
+  text: {
+    fontSize: 14,
+    fontFamily: 'space-mono',
+  },
+  list: {
+    backgroundColor: 'white',
+    flex: 1,
+  },
+  header: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    backgroundColor: 'grey',
+    paddingLeft: 5,
+  },
+  item: {
+    fontSize: 14,
+    paddingLeft: 5,
+  },
 });
+
+// First sort
+// Then create a dictionary and push the whole object to its relevant place
+const sortedDict = data
+  .sort((a, b) => a.name.first_name.localeCompare(b.name.first_name))
+  .reduce((dict, obj) => {
+    const firstLetter = obj.name.first_name.charAt(0);
+    const dicted = dict;
+    if (!dicted[firstLetter]) {
+      dicted[firstLetter] = [];
+    }
+    dicted[firstLetter].push(obj);
+    return dicted;
+  }, []);
+
+// Finally structure the data in a way that sectionlist wants
+const sectArr = Object.keys(sortedDict).map(letterkey => ({
+  title: letterkey,
+  data: sortedDict[letterkey],
+}));
+
+console.log(sortedDict);
+console.log(sectArr);
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       gotData: false,
-      concerts: []
     };
   }
 
   componentDidMount() {
-    this.setState({ gotData: true, concerts: data });
+    this.setState({ gotData: true });
   }
-
-  getNamesBeginningWith(a) {
-    let i = 0;
-    let grad = [];
-    while (this.state.concerts[i].name.first_name[0] != a && a <= "z") {
-      i++;
-    }
-    while (this.state.concerts[i].name.first_name.startsWith(a)) {
-      grad.push(this.state.concerts[i].name.first_name);
-      i += 1;
-    }
-    console.log(grad);
-    //return grad;
-    return grad.join("\r\n");
-  }
-
-  renderConcerts = concerts => {
-    return concerts.map((concert, index) => {
-      return (
-        <View key={index}>
-          <Text>{concert.name.first_name}</Text>
-        </View>
-      );
-    });
-  };
 
   render() {
+    const { gotData } = this.state;
     return (
-      <ScrollView contentContainerStyle={styles.container}>
-        {!this.state.gotData ? (
+      <View style={styles.container}>
+        <View>
+          <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Contacts</Text>
+        </View>
+        {!gotData ? (
           <ActivityIndicator size="large" />
         ) : (
           <SectionList
-            renderItem={({ item, index, section }) => (
-              <Text key={index}>{item}</Text>
+            style={styles.list}
+            ListFooterComponent={() => <ActivityIndicator size="small" />}
+            renderItem={({ item, index }) => (
+              <Text style={styles.item} key={index}>
+                {item.name.first_name}
+              </Text>
             )}
             renderSectionHeader={({ section: { title } }) => (
-              <Text style={{ fontWeight: "bold" }}>{title}</Text>
+              <Text style={styles.header}>{title}</Text>
             )}
-            sections={[
-              { title: "A", data: [this.getNamesBeginningWith("A")] },
-              { title: "B", data: [this.getNamesBeginningWith("B")] },
-              { title: "C", data: [this.getNamesBeginningWith("C")] },
-              { title: "D", data: [this.getNamesBeginningWith("D")] },
-              { title: "E", data: [this.getNamesBeginningWith("E")] },
-              { title: "F", data: [this.getNamesBeginningWith("F")] },
-              { title: "G", data: [this.getNamesBeginningWith("G")] },
-              { title: "H", data: [this.getNamesBeginningWith("H")] },
-              { title: "I", data: [this.getNamesBeginningWith("I")] },
-              { title: "J", data: [this.getNamesBeginningWith("J")] }
-            ]}
+            sections={sectArr}
             keyExtractor={(item, index) => item + index}
           />
         )}
-      </ScrollView>
+      </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#fff",
-    padding: 16
-  },
-  concertContainer: {
-    flex: 1,
-    flexDirection: "row",
-    paddingBottom: 16
-  },
-  infoContainer: {
-    paddingLeft: 8,
-    justifyContent: "space-around",
-    flex: 1
-  },
-  text: {
-    fontSize: 14,
-    fontFamily: "space-mono"
-  }
-});
